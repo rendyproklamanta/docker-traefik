@@ -1,0 +1,53 @@
+version: "3.6"
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - TZ=Asia/Jakarta
+      - MYSQL_ROOT_PASSWORD=2kxSZkF4vVZ9
+    volumes:
+      - ./mysql/data/:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/my.cnf
+    networks:
+      - "traefik-public"
+
+  pma:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      - PMA_HOST=db
+      - UPLOAD_LIMIT=2G
+      - MEMORY_LIMIT=500M
+      - MAX_EXECUTION_TIME=1000
+
+  # Get backup files : docker container exec mysql-cron-backup ls /backup
+  # Restore backup file : docker container exec mysql-cron-backup /restore.sh /backup/<your_sql_backup_gz_file>
+  mysql-cron-backup:
+    image: fradelg/mysql-cron-backup
+    depends_on:
+      - db
+    volumes:
+      - ./mysql/backup:/backup
+    environment:
+      - TZ=Asia/Jakarta
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASS=2kxSZkF4vVZ9
+      - MAX_BACKUPS=10
+      - INIT_BACKUP=1
+      - CRON_TIME=0 0 * * *
+    restart: unless-stopped
+
+networks:
+  traefik-public:
+    external: true

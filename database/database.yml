@@ -5,11 +5,9 @@ services:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    ports:
-      - "3306:3306"
     environment:
       - TZ=Asia/Jakarta
-      - MYSQL_ROOT_PASSWORD=2kxSZkF4vVZ9
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - ./mysql/data/:/var/lib/mysql
       - ./mysql/my.cnf:/etc/my.cnf
@@ -42,7 +40,7 @@ services:
       - TZ=Asia/Jakarta
       - MYSQL_HOST=db
       - MYSQL_USER=root
-      - MYSQL_PASS=2kxSZkF4vVZ9
+      - MYSQL_PASS=${MYSQL_ROOT_PASSWORD}
       - MAX_BACKUPS=10
       - INIT_BACKUP=1
       - CRON_TIME=0 0 * * *

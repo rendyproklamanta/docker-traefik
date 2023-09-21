@@ -7,8 +7,8 @@ services:
     command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
     restart: always
     networks:
-      - "traefik-public"
+      - "traefik-network"
 
 networks:
-  traefik-public:
+  traefik-network:
     external: true

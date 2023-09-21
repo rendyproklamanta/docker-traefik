@@ -4,6 +4,7 @@ services:
       
   whoami:
     image: "traefik/whoami"
+    restart: "always"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`whoami.domain.com`)"
@@ -12,8 +13,8 @@ services:
       - "traefik.http.routers.whoami.tls=true"
       - "traefik.http.routers.whoami.tls.certresolver=letsencrypt"
     networks:
-      - "traefik-public"
+      - "traefik-network"
 
 networks:
-  traefik-public:
+  traefik-network:
     external: true

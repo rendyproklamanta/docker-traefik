@@ -4,6 +4,7 @@ services:
 
   traefik:
     image: "traefik:v2.10"
+    restart: "always"
     command:
       #- "--log.level=DEBUG"
       - "--api.insecure=true"
@@ -25,10 +26,10 @@ services:
       - "traefik-certs:/etc/traefik/acme"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
-      - "traefik-public"
+      - "traefik-network"
 
 networks:
-  traefik-public:
+  traefik-network:
     external: true
 
 volumes:
